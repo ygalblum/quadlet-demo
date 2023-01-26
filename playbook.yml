@@ -35,9 +35,19 @@
     - name: Create private key (RSA, 4096 bits)
       community.crypto.openssl_privatekey:
         path: /tmp/quadlet-demo-scratch/certificate.key
+    - name: Create certificate signing request (CSR) for self-signed certificate
+      community.crypto.openssl_csr_pipe:
+        privatekey_path: /tmp/quadlet-demo-scratch/certificate.key
+        common_name: example.org
+        organization_name: Example Org
+        subject_alt_name:
+        - "DNS:example.org"
+        - "DNS:www.example.org"
+      register: csr
     - name: Create simple self-signed certificate
       community.crypto.x509_certificate:
         path: /tmp/quadlet-demo-scratch/certificate.pem
+        csr_content: "{{ csr.csr }}"
         privatekey_path: /tmp/quadlet-demo-scratch/certificate.key
         provider: selfsigned
     - name: Create the podman secret
