@@ -6,16 +6,45 @@
     ansible.posix.selinux:
       state: disabled
   - set_fact:
-      copr_arch: "{{ ansible_architecture if ansible_architecture == 'x86_64' else 'aarch64'}}"
+      repository_arch: "{{ ansible_architecture if ansible_architecture == 'x86_64' else 'aarch64'}}"
   - name: Enable OSBuild COPR
     community.general.copr:
       name: "alexl/podman-snapshot"
-      chroot: "centos-stream-9-{{ copr_arch }}"
+      chroot: "centos-stream-9-{{ repository_arch }}"
+  - name: Add the Kubernetes YUM repo
+    ansible.builtin.yum_repository:
+      name: Kubernetes
+      description: Kubernetes
+      baseurl: "https://packages.cloud.google.com/yum/repos/kubernetes-el7-{{repository_arch}}"
+      gpgcheck: true
+      gpgkey: https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
   - name: Install packages
     ansible.builtin.package:
         name:
         - podman
         - podman-quadlet
+        - python3-cryptography
+        - kubectl
+  - name: Create a podman secret for the self signed certificate
+    block:
+    - name: Create a scrtach directory
+      ansible.builtin.file:
+        path: /tmp/quadlet-demo-scratch
+        state: directory
+        mode: '0755'
+    - name: Create private key (RSA, 4096 bits)
+      community.crypto.openssl_privatekey:
+        path: /tmp/quadlet-demo-scratch/certificate.key
+    - name: Create simple self-signed certificate
+      community.crypto.x509_certificate:
+        path: /tmp/quadlet-demo-scratch/certificate.pem
+        privatekey_path: /tmp/quadlet-demo-scratch/certificate.key
+        provider: selfsigned
+    - name: Create the podman secret
+      ansible.builtin.shell: |
+        kubectl create secret generic --from-file=certificate.key --from-file=certificate.pem quadlet-demo --dry-run=client -o yaml | podman kube play -
+      args:
+        chdir: /tmp/quadlet-demo-scratch
   - name: Create the Quadlet directory
     ansible.builtin.file:
       path: /etc/containers/systemd
