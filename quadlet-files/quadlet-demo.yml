@@ -9,8 +9,10 @@ spec:
   - name: envoy
     image: docker.io/envoyproxy/envoy:v1.25.0
     volumeMounts:
-      - name: config-volume
-        mountPath: /etc/envoy
+    - name: config-volume
+      mountPath: /etc/envoy
+    - name: certificates
+      mountPath: /etc/envoy-certificates
     env:
     - name: ENVOY_UID
       value: "0"
@@ -18,4 +20,7 @@ spec:
   - name: config-volume
     configMap:
       name: envoy-proxy-config
+  - name: certificates
+    secret:
+      secretName: quadlet-demo
 

@@ -38,6 +38,16 @@ data:
               - name: envoy.filters.http.router
                 typed_config:
                   "@type": type.googleapis.com/envoy.extensions.filters.http.router.v3.Router
+          transport_socket:
+            name: envoy.transport_sockets.tls
+            typed_config:
+              "@type": type.googleapis.com/envoy.extensions.transport_sockets.tls.v3.DownstreamTlsContext
+              common_tls_context:
+                tls_certificates:
+                - certificate_chain:
+                    filename: /etc/envoy-certificates/certificate.pem
+                  private_key:
+                    filename: /etc/envoy-certificates/certificate.key
       clusters:
       - name: backend
         connect_timeout: 5s
