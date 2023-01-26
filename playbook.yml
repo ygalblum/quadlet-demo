@@ -7,7 +7,7 @@
       state: disabled
   - set_fact:
       repository_arch: "{{ ansible_architecture if ansible_architecture == 'x86_64' else 'aarch64'}}"
-  - name: Enable OSBuild COPR
+  - name: Enable Podman snapshot COPR
     community.general.copr:
       name: "alexl/podman-snapshot"
       chroot: "centos-stream-9-{{ repository_arch }}"
