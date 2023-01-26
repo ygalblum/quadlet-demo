@@ -1,0 +1,36 @@
+- name: Setup quadlet demo machine
+  hosts: all
+  become: true
+  tasks:
+  - name: Disable SELinux - Temporary Workaround
+    ansible.posix.selinux:
+      state: disabled
+  - set_fact:
+      copr_arch: "{{ ansible_architecture if ansible_architecture == 'x86_64' else 'aarch64'}}"
+  - name: Enable OSBuild COPR
+    community.general.copr:
+      name: "alexl/podman-snapshot"
+      chroot: "centos-stream-9-{{ copr_arch }}"
+  - name: Install packages
+    ansible.builtin.package:
+        name:
+        - podman
+        - podman-quadlet
+  - name: Create the Quadlet directory
+    ansible.builtin.file:
+      path: /etc/containers/systemd
+      state: directory
+      mode: '0755'
+      recurse: true
+  - name: Copy the Quadlet files
+    ansible.builtin.copy:
+      src: quadlet-files/
+      dest: /etc/containers/systemd
+  - name: Run daemon reload to make Quadlet create the service files
+    ansible.builtin.systemd:
+      daemon_reload: yes
+  - name: Start the Quadlet Demo Service
+    ansible.builtin.systemd:
+      state: started
+      name: quadlet-demo
+

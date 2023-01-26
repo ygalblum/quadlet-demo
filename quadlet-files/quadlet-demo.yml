@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: quadlet-demo
+spec:
+  containers:
+  - name: nginx
+    image: quay.io/libpod/alpine_nginx:latest
+  - name: envoy
+    image: docker.io/envoyproxy/envoy:v1.25.0
+    volumeMounts:
+      - name: config-volume
+        mountPath: /etc/envoy
+    env:
+    - name: ENVOY_UID
+      value: "0"
+  volumes:
+  - name: config-volume
+    configMap:
+      name: envoy-proxy-config
+
