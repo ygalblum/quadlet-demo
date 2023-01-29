@@ -25,6 +25,7 @@
         - podman-quadlet
         - python3-cryptography
         - kubectl
+        - bash-completion
   - name: Create a podman secret for the self signed certificate
     block:
     - name: Create a scrtach directory
