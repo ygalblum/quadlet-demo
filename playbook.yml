@@ -20,12 +20,12 @@
       gpgkey: https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
   - name: Install packages
     ansible.builtin.package:
-        name:
-        - podman
-        - podman-quadlet
-        - python3-cryptography
-        - kubectl
-        - bash-completion
+      name:
+      - podman
+      - podman-quadlet
+      - python3-cryptography
+      - kubectl
+      - bash-completion
   - name: Create a podman secret for the self signed certificate
     block:
     - name: Create a scrtach directory
@@ -74,4 +74,3 @@
       name: quadlet-demo
       state: started
       enabled: true
-
