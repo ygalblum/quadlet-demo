@@ -70,6 +70,7 @@
       daemon_reload: yes
   - name: Start the Quadlet Demo Service
     ansible.builtin.systemd:
-      state: started
       name: quadlet-demo
+      state: started
+      enabled: true
 
