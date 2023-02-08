@@ -2,9 +2,13 @@
   hosts: all
   become: true
   tasks:
-  - name: Disable SELinux - Temporary Workaround
-    ansible.posix.selinux:
-      state: disabled
+  - name: Upgrade all packages
+    package:
+      name: "*"
+      state: latest
+    register: result
+    retries: 5
+    until: result is success
   - set_fact:
       repository_arch: "{{ ansible_architecture if ansible_architecture == 'x86_64' else 'aarch64'}}"
   - name: Add the Kubernetes YUM repo
