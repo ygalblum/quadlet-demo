@@ -7,10 +7,6 @@
       state: disabled
   - set_fact:
       repository_arch: "{{ ansible_architecture if ansible_architecture == 'x86_64' else 'aarch64'}}"
-  - name: Enable Podman snapshot COPR
-    community.general.copr:
-      name: "alexl/podman-snapshot"
-      chroot: "centos-stream-9-{{ repository_arch }}"
   - name: Add the Kubernetes YUM repo
     ansible.builtin.yum_repository:
       name: Kubernetes
@@ -22,7 +18,6 @@
     ansible.builtin.package:
       name:
       - podman
-      - podman-quadlet
       - python3-cryptography
       - kubectl
       - bash-completion
