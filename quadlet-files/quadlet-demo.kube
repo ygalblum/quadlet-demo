@@ -1,3 +1,7 @@
+[Unit]
+Requires=quadlet-demo-mysql.service
+After=quadlet-demo-mysql.service
+
 [Kube]
 # Point to the yaml file in the same directory
 Yaml=quadlet-demo.yml
