@@ -1,3 +1,6 @@
+[Install]
+WantedBy=default.target
+
 [Container]
 Image=docker.io/library/mysql:5.6
 ContainerName=quadlet-demo-mysql
