@@ -1,3 +1,6 @@
+[Install]
+WantedBy=default.target
+
 [Unit]
 Requires=quadlet-demo-mysql.service
 After=quadlet-demo-mysql.service

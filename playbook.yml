@@ -82,4 +82,3 @@
     ansible.builtin.systemd:
       name: quadlet-demo
       state: started
-      enabled: true
