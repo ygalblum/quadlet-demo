@@ -8,7 +8,7 @@ After=quadlet-demo-mysql.service
 [Kube]
 # Point to the yaml file in the same directory
 Yaml=quadlet-demo.yml
-# Use the quedlet-demo network
+# Use the quadlet-demo network
 Network=quadlet-demo.network
 # Publish the envoy proxy data port
 PublishPort=8000:8080
