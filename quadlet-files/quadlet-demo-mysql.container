@@ -6,5 +6,5 @@ Image=docker.io/library/mysql:5.6
 ContainerName=quadlet-demo-mysql
 Volume=quadlet-demo-mysql.volume:/var/lib/mysql
 Network=quadlet-demo.network
-# Once 4.5 is release this line should change to use the Secret key
+# Once 4.5 is released change this line to use the quadlet Secret key
 PodmanArgs=--secret=mysql-root-password-container,type=env,target=MYSQL_ROOT_PASSWORD
