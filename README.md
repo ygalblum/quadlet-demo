@@ -3,6 +3,7 @@
 Mimic the Kubernetes [Example: Deploying WordPress and MySQL with Persistent Volumes](https://kubernetes.io/docs/tutorials/stateful-application/mysql-wordpress-persistent-volume/) using Podman, Systemd and Quadlet
 
 ## Deploy the demo using Ansible
+
 - Start a target machine
     - The demo was tested on a CentOS Stream 9 based EC2 instance
 - On your development machine:
