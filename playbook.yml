@@ -25,6 +25,14 @@
       - python3-cryptography
       - kubectl
       - bash-completion
+  - name: Open Ports in firewalld
+    ansible.posix.firewalld:
+      port: "{{ item }}"
+      permanent: true
+      state: enabled
+    loop:
+      - 8000/tcp
+      - 9000/tcp
   - name: Create a podman secret for the self signed certificate
     block:
     - name: Create a scrtach directory
