@@ -1,4 +1,5 @@
 # Quadlet Demo
+
 Mimic the Kubernetes [Example: Deploying WordPress and MySQL with Persistent Volumes](https://kubernetes.io/docs/tutorials/stateful-application/mysql-wordpress-persistent-volume/) using Podman, Systemd and Quadlet
 
 ## Deploy the demo using Ansible
@@ -18,7 +19,7 @@ Mimic the Kubernetes [Example: Deploying WordPress and MySQL with Persistent Vol
         ansible-galaxy collection install -r requirements.yml
         ```
     - Create the `inventory.yml` file:
-        ```
+        ```yaml
         all:
           hosts:
             < FQDN or IP of the target machine >:
