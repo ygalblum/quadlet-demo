@@ -32,3 +32,5 @@ Mimic the Kubernetes [Example: Deploying WordPress and MySQL with Persistent Vol
         ```
         ansible-playbook playbook.yml
         ```
+    - Open the machine's URL in a browser, using port 8000 and `https://`
+      and you should see the Wordpress setup page.
