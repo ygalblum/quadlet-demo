@@ -83,6 +83,9 @@
     ansible.builtin.copy:
       src: quadlet-files/
       dest: /etc/containers/systemd
+      owner: root
+      group: root
+      mode: '0644'
   - name: Run daemon reload to make Quadlet create the service files
     ansible.builtin.systemd:
       daemon_reload: yes
