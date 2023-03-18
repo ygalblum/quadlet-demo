@@ -42,7 +42,7 @@
 
   - name: Create a podman secret for the self signed certificate
     block:
-    - name: Create a scrtach directory
+    - name: Create a scratch directory
       ansible.builtin.file:
         path: /tmp/quadlet-demo-scratch
         state: directory
