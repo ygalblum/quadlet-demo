@@ -9,7 +9,8 @@
     register: result
     retries: 5
     until: result is success
-  - set_fact:
+  - name: Get machine architecture and save it as a fact
+    ansible.builtin.set_fact:
       repository_arch: "{{ ansible_architecture if ansible_architecture == 'x86_64' else 'aarch64' }}"
   - name: Add the Kubernetes YUM repo
     ansible.builtin.yum_repository:
