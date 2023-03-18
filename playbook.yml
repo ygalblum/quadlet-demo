@@ -10,12 +10,12 @@
     retries: 5
     until: result is success
   - set_fact:
-      repository_arch: "{{ ansible_architecture if ansible_architecture == 'x86_64' else 'aarch64'}}"
+      repository_arch: "{{ ansible_architecture if ansible_architecture == 'x86_64' else 'aarch64' }}"
   - name: Add the Kubernetes YUM repo
     ansible.builtin.yum_repository:
       name: Kubernetes
       description: Kubernetes
-      baseurl: "https://packages.cloud.google.com/yum/repos/kubernetes-el7-{{repository_arch}}"
+      baseurl: "https://packages.cloud.google.com/yum/repos/kubernetes-el7-{{ repository_arch }}"
       gpgcheck: true
       gpgkey: https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
   - name: Install packages
