@@ -1,6 +1,7 @@
 - name: Setup quadlet demo machine
   hosts: all
   become: true
+
   tasks:
   - name: Upgrade all packages
     package:
@@ -9,9 +10,11 @@
     register: result
     retries: 5
     until: result is success
+
   - name: Get machine architecture and save it as a fact
     ansible.builtin.set_fact:
       repository_arch: "{{ ansible_architecture if ansible_architecture == 'x86_64' else 'aarch64' }}"
+
   - name: Add the Kubernetes YUM repo
     ansible.builtin.yum_repository:
       name: Kubernetes
@@ -19,6 +22,7 @@
       baseurl: "https://packages.cloud.google.com/yum/repos/kubernetes-el7-{{ repository_arch }}"
       gpgcheck: true
       gpgkey: https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
+
   - name: Install packages
     ansible.builtin.package:
       name:
@@ -26,6 +30,7 @@
       - python3-cryptography
       - kubectl
       - bash-completion
+
   - name: Open Ports in firewalld
     ansible.posix.firewalld:
       port: "{{ item }}"
@@ -34,6 +39,7 @@
     loop:
       - 8000/tcp
       - 9000/tcp
+
   - name: Create a podman secret for the self signed certificate
     block:
     - name: Create a scrtach directory
@@ -41,9 +47,11 @@
         path: /tmp/quadlet-demo-scratch
         state: directory
         mode: '0755'
+
     - name: Create private key (RSA, 4096 bits)
       community.crypto.openssl_privatekey:
         path: /tmp/quadlet-demo-scratch/certificate.key
+
     - name: Create certificate signing request (CSR) for self-signed certificate
       community.crypto.openssl_csr_pipe:
         privatekey_path: /tmp/quadlet-demo-scratch/certificate.key
@@ -53,33 +61,40 @@
         - "DNS:example.org"
         - "DNS:www.example.org"
       register: csr
+
     - name: Create simple self-signed certificate
       community.crypto.x509_certificate:
         path: /tmp/quadlet-demo-scratch/certificate.pem
         csr_content: "{{ csr.csr }}"
         privatekey_path: /tmp/quadlet-demo-scratch/certificate.key
         provider: selfsigned
+
     - name: Create the podman secret
       ansible.builtin.shell: |
         kubectl create secret generic --from-file=certificate.key --from-file=certificate.pem envoy-certificates --dry-run=client -o yaml | podman kube play -
       args:
         chdir: /tmp/quadlet-demo-scratch
+
   - name: Create the secrets for the mysql server
     block:
     - set_fact:
         root_password: "{{ lookup('community.general.random_string') }}"
+
     - name: Create the kube secret
       ansible.builtin.shell: |
         kubectl create secret generic --from-literal=password="{{ root_password }}" mysql-root-password-kube --dry-run=client -o yaml | podman kube play -
+
     - name: Create the podman secret
       ansible.builtin.shell: |
         echo -n "{{ root_password }}" | podman secret create mysql-root-password-container -
+
   - name: Create the Quadlet directory
     ansible.builtin.file:
       path: /etc/containers/systemd
       state: directory
       mode: '0755'
       recurse: true
+
   - name: Copy the Quadlet files
     ansible.builtin.copy:
       src: quadlet-files/
@@ -87,9 +102,11 @@
       owner: root
       group: root
       mode: '0644'
+
   - name: Run daemon reload to make Quadlet create the service files
     ansible.builtin.systemd:
       daemon_reload: yes
+
   - name: Start the Quadlet Demo Service
     ansible.builtin.systemd:
       name: quadlet-demo
