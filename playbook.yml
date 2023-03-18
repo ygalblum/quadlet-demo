@@ -77,7 +77,8 @@
 
   - name: Create the secrets for the mysql server
     block:
-    - set_fact:
+    - name: Create random string and save it in root_password
+      ansible.builtin.set_fact:
         root_password: "{{ lookup('community.general.random_string') }}"
 
     - name: Create the kube secret
