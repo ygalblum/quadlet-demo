@@ -1,1 +1,6 @@
 inventory.yml
+#
+# Ignore vagrant-related files
+#
+.vagrant
+Vagrantfile.1
