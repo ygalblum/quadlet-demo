@@ -31,6 +31,13 @@
       - kubectl
       - bash-completion
 
+  - name: Check if firewalld is installed
+    ansible.builtin.package:
+      name: firewalld
+      state: present
+    check_mode: true
+    register: firewalld_exists
+
   - name: Open Ports in firewalld
     ansible.posix.firewalld:
       port: "{{ item }}"
@@ -39,6 +46,7 @@
     loop:
     - 8000/tcp
     - 9000/tcp
+    when: not firewalld_exists.changed
 
   - name: Create a podman secret for the self signed certificate
     block:
