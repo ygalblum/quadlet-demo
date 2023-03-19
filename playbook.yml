@@ -106,7 +106,7 @@
 
   - name: Run daemon reload to make Quadlet create the service files
     ansible.builtin.systemd:
-      daemon_reload: yes
+      daemon_reload: true
 
   - name: Start the Quadlet Demo Service
     ansible.builtin.systemd:
