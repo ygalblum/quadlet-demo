@@ -82,6 +82,8 @@
         kubectl create secret generic --from-file=certificate.key --from-file=certificate.pem envoy-certificates --dry-run=client -o yaml | podman kube play -
       args:
         chdir: /tmp/quadlet-demo-scratch
+      register: secret_created
+      changed_when: secret_created.rc == 0
 
   - name: Create the secrets for the mysql server
     block:
@@ -92,10 +94,14 @@
     - name: Create the kube secret
       ansible.builtin.shell: |
         kubectl create secret generic --from-literal=password="{{ root_password }}" mysql-root-password-kube --dry-run=client -o yaml | podman kube play -
+      register: secret_created
+      changed_when: secret_created.rc == 0
 
     - name: Create the podman secret
       ansible.builtin.shell: |
         echo -n "{{ root_password }}" | podman secret create mysql-root-password-container -
+      register: secret_created
+      changed_when: secret_created.rc == 0
 
   - name: Create the Quadlet directory
     ansible.builtin.file:
