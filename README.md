@@ -34,3 +34,19 @@ Mimic the Kubernetes [Example: Deploying WordPress and MySQL with Persistent Vol
         ```
     - Open the machine's URL in a browser, using port 8000 and `https://`
       and you should see the Wordpress setup page.
+
+## Deploy using Vagrant and libvirt
+
+This repository contains a Vagrantfile, that can be used to create a new
+virtual machine and deploy the quadlet-demo using Ansible.
+
+- You need vagrant and vagrant-libvirt.
+- Fetch the box, per default this is `generic/centos9s`,
+  using `vagrant box add generic/centos9s`.
+- Run `vagrant up`
+
+To reach the container from the machine running vagrant
+you need to find out the Vagrant VM's IP address, e.g.
+by using the vagrant address plugin or roaming through
+the Ansible inventory file in
+`.vagrant/provisioners/ansible/inventory/vagrant_ansible_inventory`.
