@@ -37,8 +37,8 @@
       permanent: true
       state: enabled
     loop:
-      - 8000/tcp
-      - 9000/tcp
+    - 8000/tcp
+    - 9000/tcp
 
   - name: Create a podman secret for the self signed certificate
     block:
