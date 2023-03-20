@@ -89,7 +89,7 @@
     block:
     - name: Create random string and save it in root_password
       ansible.builtin.set_fact:
-        root_password: "{{ lookup('community.general.random_string') }}"
+        root_password: "{{ lookup('community.general.random_string', special=false, length=20) }}"
 
     - name: Create the kube secret
       ansible.builtin.shell: |
