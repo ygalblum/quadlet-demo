@@ -111,8 +111,8 @@
       group: root
       mode: '0755'
     loop:
-      - /etc/containers
-      - /etc/containers/systemd
+    - /etc/containers
+    - /etc/containers/systemd
 
   - name: Copy the Quadlet files
     ansible.builtin.copy:
