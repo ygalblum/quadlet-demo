@@ -52,18 +52,18 @@
     block:
     - name: Create a scratch directory
       ansible.builtin.file:
-        path: /tmp/quadlet-demo-scratch
+        path: /opt/quadlet-demo/
         state: directory
         mode: '0755'
 
     - name: Create private key (RSA, 4096 bits)
       community.crypto.openssl_privatekey:
-        path: /tmp/quadlet-demo-scratch/certificate.key
+        path: /opt/quadlet-demo/certificate.key
 
     - name: Create certificate signing request (CSR) for self-signed certificate
       community.crypto.openssl_csr:
-        path: /tmp/quadlet-demo-scratch/certificate.csr
-        privatekey_path: /tmp/quadlet-demo-scratch/certificate.key
+        path: /opt/quadlet-demo/certificate.csr
+        privatekey_path: /opt/quadlet-demo/certificate.key
         common_name: example.org
         organization_name: Example Org
         subject_alt_name:
@@ -73,16 +73,16 @@
 
     - name: Create simple self-signed certificate
       community.crypto.x509_certificate:
-        path: /tmp/quadlet-demo-scratch/certificate.pem
-        csr_path: /tmp/quadlet-demo-scratch/certificate.csr
-        privatekey_path: /tmp/quadlet-demo-scratch/certificate.key
+        path: /opt/quadlet-demo/certificate.pem
+        csr_path: /opt/quadlet-demo/certificate.csr
+        privatekey_path: /opt/quadlet-demo/certificate.key
         provider: selfsigned
 
     - name: Create the podman secret
       ansible.builtin.shell: |
         kubectl create secret generic --from-file=certificate.key --from-file=certificate.pem envoy-certificates --dry-run=client -o yaml | podman kube play -
       args:
-        chdir: /tmp/quadlet-demo-scratch
+        chdir: /opt/quadlet-demo/
       register: secret_created
       changed_when: secret_created.rc == 0
 
