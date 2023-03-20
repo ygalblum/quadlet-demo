@@ -61,7 +61,8 @@
         path: /tmp/quadlet-demo-scratch/certificate.key
 
     - name: Create certificate signing request (CSR) for self-signed certificate
-      community.crypto.openssl_csr_pipe:
+      community.crypto.openssl_csr:
+        path: /tmp/quadlet-demo-scratch/certificate.csr
         privatekey_path: /tmp/quadlet-demo-scratch/certificate.key
         common_name: example.org
         organization_name: Example Org
@@ -73,7 +74,7 @@
     - name: Create simple self-signed certificate
       community.crypto.x509_certificate:
         path: /tmp/quadlet-demo-scratch/certificate.pem
-        csr_content: "{{ csr.csr }}"
+        csr_path: /tmp/quadlet-demo-scratch/certificate.csr
         privatekey_path: /tmp/quadlet-demo-scratch/certificate.key
         provider: selfsigned
 
