@@ -105,10 +105,14 @@
 
   - name: Create the Quadlet directory
     ansible.builtin.file:
-      path: /etc/containers/systemd
+      path: "{{ item }}"
       state: directory
+      owner: root
+      group: root
       mode: '0755'
-      recurse: true
+    loop:
+      - /etc/containers
+      - /etc/containers/systemd
 
   - name: Copy the Quadlet files
     ansible.builtin.copy:
