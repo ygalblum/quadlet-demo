@@ -77,13 +77,24 @@
         privatekey_path: /tmp/quadlet-demo-scratch/certificate.key
         provider: selfsigned
 
+    - name: Slurp certificate pem file
+      ansible.builtin.slurp:
+        src: '/tmp/quadlet-nginx-envoy-tls-scratch/certificate.pem'
+      register: slurp_certificate_pem
+
+    - name: Slurp certificate key file
+      ansible.builtin.slurp:
+        src: '/tmp/quadlet-nginx-envoy-tls-scratch/certificate.key'
+      register: slurp_certificate_key
+
     - name: Create the podman secret
-      ansible.builtin.shell: |
-        kubectl create secret generic --from-file=certificate.key --from-file=certificate.pem envoy-certificates --dry-run=client -o yaml | podman kube play -
-      args:
-        chdir: /tmp/quadlet-demo-scratch
-      register: secret_created
-      changed_when: secret_created.rc == 0
+      containers.podman.podman_secret:
+        name: envoy-certificates
+        state: present
+        skip_existing: true
+        data: |
+          certificate.key: {{ slurp_certificate_key['content'] }}
+          certificate.pem: {{ slurp_certificate_pem['content'] }}
 
   - name: Create the secrets for the mysql server
     block:
