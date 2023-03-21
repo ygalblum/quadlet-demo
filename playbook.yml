@@ -46,6 +46,11 @@
     - services['firewalld.service'] is defined
     - services['firewalld.service']['state'] == 'running'
 
+  - name: List existing secrets
+    ansible.builtin.command: podman secret ls
+    register: existing_podman_secrets
+    changed_when: false
+
   - name: Create a podman secret for the self signed certificate
     block:
     - name: Create a scratch directory
