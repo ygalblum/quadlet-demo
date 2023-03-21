@@ -104,10 +104,11 @@
             name: mysql-root-password-kube
 
     - name: Create the podman secret for the mysql root password
-      ansible.builtin.shell: |
-        echo -n "{{ root_password }}" | podman secret create mysql-root-password-container -
-      register: secret_created
-      changed_when: secret_created.rc == 0
+      containers.podman.podman_secret:
+        name: mysql-root-password-container
+        state: present
+        skip_existing: true
+        data: "{{ root_password }}"
 
   - name: Create the Quadlet directory
     ansible.builtin.file:
