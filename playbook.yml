@@ -100,12 +100,16 @@
         kubectl create secret generic --from-literal=password="{{ root_password }}" mysql-root-password-kube --dry-run=client -o yaml | podman kube play -
       register: secret_created
       changed_when: secret_created.rc == 0
+      when:
+      - not 'mysql-root-password-kube' in existing_podman_secrets.stdout
 
     - name: Create the podman secret
       ansible.builtin.shell: |
         echo -n "{{ root_password }}" | podman secret create mysql-root-password-container -
       register: secret_created
       changed_when: secret_created.rc == 0
+      when:
+      - not 'mysql-root-password-kube' in existing_podman_secrets.stdout
 
   - name: Create the Quadlet directory
     ansible.builtin.file:
