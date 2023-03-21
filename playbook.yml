@@ -88,6 +88,8 @@
         chdir: /opt/quadlet-demo/
       register: secret_created
       changed_when: secret_created.rc == 0
+      when:
+      - not 'envoy-certificates' in existing_podman_secrets.stdout
 
   - name: Create the secrets for the mysql server
     block:
